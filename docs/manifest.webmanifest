@@ -1,0 +1,18 @@
+{
+  "name": "Andon – Limhjul",
+  "short_name": "Andon",
+  "description": "Designförslag för Andon vid Limhjul 3 och 4",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef2f6",
+  "theme_color": "#142538",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
