@@ -1,0 +1,16 @@
+import express from 'express';
+import webpush from 'web-push';
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+const app=express();app.use(express.json({limit:'20kb'}));app.use(express.static('public'));
+const file=process.env.DATA_FILE||'./andon-data.json';let data={alarms:[],subscriptions:[]};try{data=JSON.parse(fs.readFileSync(file,'utf8'))}catch{};
+const save=()=>fs.writeFileSync(file,JSON.stringify(data,null,2));
+const pub=process.env.VAPID_PUBLIC_KEY,priv=process.env.VAPID_PRIVATE_KEY;
+if(pub&&priv)webpush.setVapidDetails('mailto:'+(process.env.VAPID_EMAIL||'admin@example.com'),pub,priv);
+const manager=(req,res,next)=>{const token=process.env.MANAGER_PIN;if(!token)return res.status(503).json({error:'MANAGER_PIN saknas på servern'});if(req.get('x-manager-pin')!==token)return res.status(403).json({error:'Fel ansvarigkod'});next()};
+app.get('/api/config',(req,res)=>res.json({publicKey:pub||null,configured:!!process.env.MANAGER_PIN}));
+app.get('/api/alarms',(req,res)=>res.json(data.alarms.slice(-200).reverse()));
+app.post('/api/subscribe',manager,(req,res)=>{if(!req.body?.endpoint||!req.body?.keys?.auth||!req.body?.keys?.p256dh)return res.sendStatus(400);if(!data.subscriptions.some(s=>s.endpoint===req.body.endpoint))data.subscriptions.push(req.body);save();res.sendStatus(204)});
+app.post('/api/alarms',async(req,res)=>{const {station,category}=req.body||{};if(!['Limhjul 3','Limhjul 4'].includes(station)||!['Material','Ställ','Kvalitet','Hjälp'].includes(category))return res.sendStatus(400);const alarm={id:crypto.randomUUID(),station,category,createdAt:new Date().toISOString(),status:'active',endedAt:null,by:null,comment:''};data.alarms.push(alarm);save();res.status(201).json(alarm);if(pub&&priv){await Promise.allSettled(data.subscriptions.map(async sub=>{try{await webpush.sendNotification(sub,JSON.stringify({title:'ANDON · '+category,body:station+' behöver hjälp',id:alarm.id}))}catch(e){if([404,410].includes(e.statusCode)){data.subscriptions=data.subscriptions.filter(s=>s.endpoint!==sub.endpoint);save()}}}))}});
+app.post('/api/alarms/:id/decision',(req,res)=>{const a=data.alarms.find(x=>x.id===req.params.id);if(!a)return res.sendStatus(404);if(a.status!=='active')return res.status(409).json({error:'Larmet är redan hanterat'});const {action,by,comment}=req.body||{};if(!['accepted','rejected'].includes(action)||!['operator','manager'].includes(by)||by==='operator'&&action==='rejected')return res.sendStatus(400);if(by==='manager'&&(!process.env.MANAGER_PIN||req.get('x-manager-pin')!==process.env.MANAGER_PIN))return res.sendStatus(403);a.status=action;a.endedAt=new Date().toISOString();a.by=by;a.comment=by==='manager'?String(comment||'').slice(0,500):'';save();res.json(a)});
+app.listen(process.env.PORT||3000,()=>console.log('Andon listening'));
