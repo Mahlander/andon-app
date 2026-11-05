@@ -1,0 +1,4 @@
+node_modules/
+andon-data.json
+.env
+.DS_Store
