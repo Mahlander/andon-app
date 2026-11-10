@@ -18,12 +18,13 @@ const pages=[
 let emp='',station='',page=0,read=new Set(),canAdvance=false;const $=id=>document.getElementById(id);
 function show(id){['login','reader','sign'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
 function key(){return 'andon-instruktion-'+station+'-'+emp}
-function openAndon(){['login','reader','sign','top'].forEach(x=>$(x).classList.add('hidden'));$('andon').classList.remove('hidden');$('exit').classList.remove('hidden');$('andon').src='./andon.html';}
+function openAndon(){['login','reader','sign','top'].forEach(x=>$(x).classList.add('hidden'));$('andon').classList.remove('hidden');$('exit').classList.add('hidden');$('andon').src='./andon.html';}
 $('loginBtn').onclick=()=>{emp=$('employee').value.trim();station=$('station').value;if(!/^\d{2,12}$/.test(emp)){$('loginError').textContent='Ange ett giltigt anställningsnummer (2–12 siffror).';return}if(localStorage.getItem(key())===VERSION){openAndon()}else{page=0;read=new Set();show('reader');renderPage()}};
 function markRead(){const el=$('instruction');if(el.scrollTop+el.clientHeight>=el.scrollHeight-8){read.add(page);$('next').disabled=false;$('readHint').textContent='Sidan genomläst. Du kan fortsätta.'}}
 function renderPage(){$('stepLabel').textContent=pages[page][0];$('instruction').innerHTML=pages[page][1]+'<div style="height:55vh"></div>'; $('instruction').scrollTop=0;$('progress').style.width=((page+1)/pages.length*100)+'%';$('prev').disabled=page===0;$('next').textContent=page===pages.length-1?'Till signering':'Nästa sida';$('next').disabled=!read.has(page);$('readHint').textContent='Läs och scrolla till slutet av sidan för att fortsätta.'; }
 $('instruction').addEventListener('scroll',markRead);$('prev').onclick=()=>{if(page>0){page--;renderPage()}};$('next').onclick=()=>{if(!read.has(page))return;if(page<pages.length-1){page++;renderPage()}else{show('sign');$('signedStation').textContent=station}};
 $('signBtn').onclick=()=>{if($('signature').value.trim()!==emp){$('signError').textContent='Anställningsnumret matchar inte inloggningen.';return}if(!$('confirm').checked){$('signError').textContent='Bekräfta att du har läst instruktionen.';return}localStorage.setItem(key(),VERSION);localStorage.setItem(key()+'-time',new Date().toISOString());openAndon()};
 $('exit').onclick=()=>{if(!confirm('Vill du logga ut och avsluta arbetspasset?'))return;$('andon').src='about:blank';$('andon').classList.add('hidden');$('exit').classList.add('hidden');$('top').classList.remove('hidden');$('employee').value='';$('signature').value='';$('confirm').checked=false;$('loginError').textContent='';$('signError').textContent='';emp='';read=new Set();page=0;show('login');};
+window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==$('andon').contentWindow||e.data?.type!=='andon-end-shift')return;$('exit').click()});
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script></body></html>
