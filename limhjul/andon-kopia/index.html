@@ -15,7 +15,7 @@ const pages=[
 ['5 av 6 · Limunderlag och styrning','<h2>Limunderlag och styrning</h2><p><b>5.</b> Lyft upp limunderlaget och placera det på bordet. Passa in strecken mot varandra, både på mitten och i sidorna, för att hitta rätt hål.</p><p><b>6.</b> Skruva ur skruven som kommer fram i hålet då mallen ligger korrekt. Välj rätt styrning för mallen och skruva i den hela vägen så att mallen inte kan ruckas.</p><p>Styrningarna skiljer mellan P7/P7M2/DL och S5.</p>'],
 ['6 av 6 · Avslutande kontroll','<h2>Avsluta riggningen</h2><p><b>7.</b> Klicka på <b>Lås ram</b> på skärmen på skåpet så att det byts till rätt limprogram. Kontrollera att programnumret ändras i rutan <b>Aktuell typ</b>.</p><p>Nu är rigget färdigt.</p><div class="warning">Kontrollera limningen på den första rutan efter varje riggning. Gör kvalitetskontroll och fyll i förstabitslappen enligt rutin.</div>']
 ];
-let emp='',station='',page=0,read=new Set(),canAdvance=false,archiveReading=false;const $=id=>document.getElementById(id);
+const riggImages=["20261110_100444.jpg","20261110_100454.jpg","20261110_100459.jpg","20261110_100508.jpg","20261110_100513.jpg","20261110_100523.jpg"];let emp='',station='',page=0,read=new Set(),canAdvance=false,archiveReading=false;const $=id=>document.getElementById(id);
 function show(id){['login','reader','sign','home','production','archive'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
 function key(){return 'andon-instruktion-'+station+'-'+emp}
 function openArchive(){archiveReading=false;show('archive');$('homeBtn').classList.remove('hidden')}
