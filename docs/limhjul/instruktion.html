@@ -106,6 +106,44 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
  .quality,.show{min-height:40px}.time input{min-height:40px}
  .visual{max-height:none}
 }
+
+/* Telefon och iPad i liggande läge: arbetsföljd och layout sida vid sida */
+@media (orientation:landscape) and (max-width:899px){
+ html,body{height:100%;min-height:100%;overflow:hidden}
+ body{height:100dvh;display:flex;flex-direction:column}
+ header{flex:0 0 auto;padding:4px 9px;gap:6px}
+ header h1{font-size:14px}header p{font-size:9px}
+ header .target{padding:5px 7px;font-size:10px}
+ .meta{flex:0 0 auto;padding:4px 8px;gap:5px;flex-wrap:nowrap;overflow-x:auto}
+ .meta label{font-size:10px;gap:4px;white-space:nowrap}
+ .meta select,.meta input{padding:4px;font-size:11px;min-width:0}
+ .meta input{width:76px}
+ .main{flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:5px;padding:5px}
+ .panel{min-height:0;display:flex;flex-direction:column;overflow:hidden}
+ .panel h2{flex:none;font-size:14px;padding:5px 7px 2px}
+ .sub{display:none}
+ .steps{flex:1;min-height:0;overflow-y:auto;padding:0 4px}
+ .step{min-height:34px;margin:2px 0;gap:2px}
+ .step-main{gap:4px;padding:3px}
+ .number{min-width:22px;height:23px;font-size:10px}
+ .step-name{font-size:clamp(9px,1.65vw,11px)}
+ .show{padding:5px 4px;font-size:10px}
+ .quality{padding:3px;font-size:15px}
+ .time{font-size:9px;padding:0 2px;gap:2px}
+ .time input{width:32px;padding:4px 1px;font-size:10px}
+ .cycle-total{flex:none;padding:5px 7px;margin:3px 4px;font-size:10px}
+ .cycle-total strong{font-size:15px}
+ .controls{flex:none;padding:4px;gap:4px}
+ .controls button{padding:5px 6px;font-size:10px}
+ .settings{flex:none;padding:3px 5px;font-size:10px}
+ .notes{display:none}
+ .visual{flex:1;min-height:0;overflow:auto;padding:4px;display:flex;flex-direction:column}
+ .map{width:100%;max-height:100%}
+ .map img{max-height:calc(100dvh - 120px);object-fit:contain}
+ .photo img{max-height:calc(100dvh - 145px);object-fit:contain}
+ .quality-view{min-height:0;flex:1}
+ .bottom{display:none}
+}
 </style></head><body><header><div><h1 id="stationTitle">LIMHJUL 4</h1><p>Digital standardiserad arbetsinstruktion · en operatör · utkast</p></div><div class="target">Mål: 120 s startintervall</div></header><div class="meta"><label>Station <select id="station"><option>Limhjul 1</option><option>Limhjul 2</option><option>Limhjul 3</option><option selected>Limhjul 4</option></select></label><label>Produkt <input value="S5 Dubbel"></label><label>Artikelnummer <input placeholder="Fyll i"></label><label>Revision <input value="Utkast"></label></div><main class="main"><section class="panel"><h2>Arbetsföljd <small style="font-size:13px;color:#638091;font-weight:normal">1 operatör</small></h2><p class="sub">Tryck på ett arbetssteg för att markera dess position på layouten. Tryck på Visa för att se en momentbild.</p><div class="steps"><div class="step" data-step="0" role="group" aria-label="Steg 1"><button class="step-main" type="button" data-select="0"><span class="number">01</span><span class="step-name">Hämta plan ruta</span></button><button class="show" type="button" data-show="0">Visa</button><label class="time">Sek <input type="number" min="0" step="1" value="0" aria-label="Tid för steg 1 i sekunder"></label></div>
 <div class="step" data-step="1" role="group" aria-label="Steg 2"><button class="step-main" type="button" data-select="1"><span class="number">02</span><span class="step-name">Förbered ruta och placera på hylla</span></button><button class="quality" type="button" data-quality="1" title="Visa kritiska moment" aria-label="Kritiska moment steg 2">◆</button><button class="show" type="button" data-show="1">Visa</button><label class="time">Sek <input type="number" min="0" step="1" value="0" aria-label="Tid för steg 2 i sekunder"></label></div>
 <div class="step" data-step="2" role="group" aria-label="Steg 3"><button class="step-main" type="button" data-select="2"><span class="number">03</span><span class="step-name">Hämta formad ruta</span></button><button class="show" type="button" data-show="2">Visa</button><label class="time">Sek <input type="number" min="0" step="1" value="0" aria-label="Tid för steg 3 i sekunder"></label></div>
